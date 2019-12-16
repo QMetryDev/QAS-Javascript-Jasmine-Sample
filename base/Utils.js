@@ -51,6 +51,8 @@ exports.TEST_CASE_PRIORITY = integrationProperties.get('automation.qmetry.testca
 exports.TEST_CASE_STATUS = integrationProperties.get('automation.qmetry.testcase.status') !== null ? integrationProperties.get('automation.qmetry.tc_status') : '';
 exports.TEST_CASE_SPRINTID = integrationProperties.get('automation.qmetry.testcase.sprintId') !== null ? integrationProperties.get('automation.qmetry.testcase.sprintId') : '';
 exports.TEST_CASE_FIXVERSIONID = integrationProperties.get('automation.qmetry.testcase.fixVersionId') !== null ? integrationProperties.get('automation.qmetry.testcase.fixVersionId') : '';
+exports.TEST_SUITE_FIELDS = integrationProperties.get('automation.qmetry.testsuiteFields') !== null ? integrationProperties.get('automation.qmetry.testsuiteFields') : '';
+exports.TEST_CASE_FIELDS = integrationProperties.get('automation.qmetry.testcaseFields') !== null ? integrationProperties.get('automation.qmetry.testcaseFields') : '';
 
 exports.testResultsPath = './test-results/';
 exports.latestCreatedZip = '';

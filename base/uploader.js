@@ -254,7 +254,17 @@ function nonRequiredRequestParam() {
     exports.extraFieldMap["projectID"] = utils_1.PROJECT_ID;
     exports.extraFieldMap["releaseID"] = utils_1.REALEASE_ID;
     exports.extraFieldMap["buildID"] = utils_1.BUILD_ID;
-    exports.extraFieldMap["testsuiteName"] = utils_1.TEST_SUITE_NAME;
+	exports.extraFieldMap["testsuiteName"] = utils_1.TEST_SUITE_NAME;
+
+	exports.extraFieldMap['testcase_fields'] = utils_1.TEST_CASE_FIELDS;
+	exports.extraFieldMap['testsuite_fields'] = utils_1.TEST_SUITE_FIELDS;
+
+
+
+	exports.extraFieldMap['testcase_fields'] = exports.extraFieldMap['testcase_fields'].replace(/\"\[/g,'[').replace(/\]"/g,']');
+	exports.extraFieldMap['testsuite_fields'] = exports.extraFieldMap['testsuite_fields'].replace(/\"\[/g,'[').replace(/\]"/g,']');
+
+
 }
 
 
