@@ -12,7 +12,8 @@
     "update": "node_modules/.bin/webdriver-manager update",
     "test": "protractor config.js",
     "posttest": "node base/uploader.js",
-    "uploadresults": "node base/uploader.js"
+    "uploadresults": "node base/uploader.js",
+    "updatechrome": "node base/updatechrome.js"
   },
   "license": "ISC",
   "bugs": {
@@ -20,7 +21,6 @@
   },
   "homepage": "https://github.com/qualityshepherd/protractor_example",
   "dependencies": {
-    "appium-adb": "^6.14.0",
     "chance": "^0.7.5",
     "jasmine-node": "^2.0.1",
     "jasmine-spec-reporter": "^2.4.0",
@@ -40,7 +40,7 @@
     "eslint-plugin-protractor": "1.40.0",
     "jasmine-core": "~3.0.0",
     "jasmine-spec-reporter": "2.7.0",
-    "protractor": "5.4.1",
+    "protractor": "5.4.2",
     "protractor-beautiful-reporter": "1.2.1",
     "protractor-pretty-html-reporter": "0.0.16",
     "ts-node": "1.7.2",
