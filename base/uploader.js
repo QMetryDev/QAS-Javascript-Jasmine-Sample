@@ -44,7 +44,7 @@ function uploadResults(filePath, callback) {
                 else {
                     callback({
                         success: false,
-						errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
+                        errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
                     });
                 }
             });
@@ -83,7 +83,7 @@ function uploadResults(filePath, callback) {
                 else {
                     callback({
                         success: false,
-						errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
+                        errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
                     });
                 }
             });
@@ -91,18 +91,18 @@ function uploadResults(filePath, callback) {
         catch (e) {
             callback({ success: false, errMessage: e });
         }
-	} else if (utils_1.ON_PREMISE &&
+    } else if (utils_1.ON_PREMISE &&
         utils_1.INTEGRATION_TYPE.toString().toLowerCase() === "qtm4j4x") {
-		// FOR QTM4J SERVER
-		let authorization_value = encodeBase64(utils_1.USERNAME, utils_1.PASSWORD);
+        // FOR QTM4J SERVER
+        let authorization_value = encodeBase64(utils_1.USERNAME, utils_1.PASSWORD);
 
         option_new = {
             method: "POST",
             url: utils_1.URL,
             headers: {
                 "Content-Type": "application/json",
-				apiKey: utils_1.API_KEY,
-				Authorization: "Basic " + authorization_value
+                apiKey: utils_1.API_KEY,
+                Authorization: "Basic " + authorization_value
             },
             body: {
                 format: 'qaf',
@@ -125,7 +125,7 @@ function uploadResults(filePath, callback) {
                 else {
                     callback({
                         success: false,
-						errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
+                        errMessage: response ? response.body.errorMessage : 'Something Went Wrong, Please Check Configuration(URL, Credentials etc...)'
                     });
                 }
             });
@@ -212,10 +212,10 @@ function encodeBase64(username, pwd) {
 }
 function getExtraFieldMap(option_new) {
     if (utils_1.INTEGRATION_TYPE.toString().toLowerCase() === "qtm4j4x") {
-		nonRequiredRequest4xParam();
-	} else {
-		nonRequiredRequestParam();
-	}
+        nonRequiredRequest4xParam();
+    } else {
+        nonRequiredRequestParam();
+    }
     if (!utils_1.ON_PREMISE &&
         utils_1.INTEGRATION_TYPE.toString().toLowerCase() === "qtm4j" ||
         utils_1.INTEGRATION_TYPE.toString().toLowerCase() === "qtm4j4x") {
@@ -278,21 +278,21 @@ function doServerCall(filePath, response, apiKey, authorization_value, callback)
         method: 'POST',
         url: response.body.url,
         headers: {
-			'Content-Type': 'multipart/form-data',
-			'apiKey': apiKey,
-			'Authorization': 'Basic ' + authorization_value
+            'Content-Type': 'multipart/form-data',
+            'apiKey': apiKey,
+            'Authorization': 'Basic ' + authorization_value
         },
         json: false,
         enconding: null,
-		formData: {
-			file: {
-			  value: fs.createReadStream(filePath),
-			  options: {
-				filename: path.basename(filePath),
-				contentType: null
-			  }
-			}
-		  }
+        formData: {
+            file: {
+                value: fs.createReadStream(filePath),
+                options: {
+                    filename: path.basename(filePath),
+                    contentType: null
+                }
+            }
+        }
     };
     try {
         request(option_new, function requestTO(error, response, body) {
@@ -341,15 +341,15 @@ function nonRequiredRequestParam() {
     exports.extraFieldMap["projectID"] = utils_1.PROJECT_ID;
     exports.extraFieldMap["releaseID"] = utils_1.REALEASE_ID;
     exports.extraFieldMap["buildID"] = utils_1.BUILD_ID;
-	exports.extraFieldMap["testsuiteName"] = utils_1.TEST_SUITE_NAME;
+    exports.extraFieldMap["testsuiteName"] = utils_1.TEST_SUITE_NAME;
 
-	exports.extraFieldMap['testcase_fields'] = utils_1.TEST_CASE_FIELDS;
-	exports.extraFieldMap['testsuite_fields'] = utils_1.TEST_SUITE_FIELDS;
+    exports.extraFieldMap['testcase_fields'] = utils_1.TEST_CASE_FIELDS;
+    exports.extraFieldMap['testsuite_fields'] = utils_1.TEST_SUITE_FIELDS;
 
 
 
-	exports.extraFieldMap['testcase_fields'] = exports.extraFieldMap['testcase_fields'].replace(/\"\[/g,'[').replace(/\]"/g,']');
-	exports.extraFieldMap['testsuite_fields'] = exports.extraFieldMap['testsuite_fields'].replace(/\"\[/g,'[').replace(/\]"/g,']');
+    exports.extraFieldMap['testcase_fields'] = exports.extraFieldMap['testcase_fields'].replace(/\"\[/g, '[').replace(/\]"/g, ']');
+    exports.extraFieldMap['testsuite_fields'] = exports.extraFieldMap['testsuite_fields'].replace(/\"\[/g, '[').replace(/\]"/g, ']');
 
 
 }
@@ -377,7 +377,10 @@ function nonRequiredRequest4xParam() {
             'status': checkValueIsBankOrNot(utils_1.TEST_CYCLE_STATUS),
             'sprintId': checkValueIsBankOrNot(utils_1.TEST_CYCLE_SPRINTID),
             'fixVersionId': checkValueIsBankOrNot(utils_1.TEST_CYCLE_FIXVERSIONID),
-            'summary': checkValueIsBankOrNot(utils_1.TEST_CYCLE_SUMMARY) !== '' ? utils_1.TEST_CYCLE_SUMMARY : 'Automated Test Cycle'
+            'summary': checkValueIsBankOrNot(utils_1.TEST_CYCLE_SUMMARY) !== '' ? utils_1.TEST_CYCLE_SUMMARY : 'Automated Test Cycle',
+            'description': checkValueIsBankOrNot(utils_1.TEST_CYCLE_DESCRIPTION),
+            'assignee': checkValueIsBankOrNot(utils_1.TEST_CYCLE_ASSIGNEE),
+            ... (checkValueIsBankOrNot(utils_1.TEST_CYCLE_CUSTOMFIELDS) !== '' && { 'customFields': JSON.parse(utils_1.TEST_CYCLE_CUSTOMFIELDS.toString()) })
         },
         'testCase': {
             'labels': checkValueIsBankOrNot(utils_1.TEST_CASE_LABELS) !== '' ? utils_1.TEST_CASE_LABELS.split(',') : [],
@@ -385,7 +388,10 @@ function nonRequiredRequest4xParam() {
             'priority': checkValueIsBankOrNot(utils_1.TEST_CASE_PRIORITY),
             'status': checkValueIsBankOrNot(utils_1.TEST_CASE_STATUS),
             'sprintId': checkValueIsBankOrNot(utils_1.TEST_CASE_SPRINTID),
-            'fixVersionId': checkValueIsBankOrNot(utils_1.TEST_CASE_FIXVERSIONID)
+            'fixVersionId': checkValueIsBankOrNot(utils_1.TEST_CASE_FIXVERSIONID),
+            'description': checkValueIsBankOrNot(utils_1.TEST_CASE_DESCRIPTION),
+            'assignee': checkValueIsBankOrNot(utils_1.TEST_CASE_ASSIGNEE),
+            ... (checkValueIsBankOrNot(utils_1.TEST_CASE_CUSTOMFIELDS) !== '' && { 'customFields': JSON.parse(utils_1.TEST_CASE_CUSTOMFIELDS.toString()) })
         }
     };
 }
