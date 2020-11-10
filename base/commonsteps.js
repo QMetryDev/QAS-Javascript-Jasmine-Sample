@@ -441,5 +441,33 @@ class CommonSteps {
 				});
 		});
 	}
+	   close(str) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield protractor_1.browser.driver.close();
+        });
+    }
+    switchWinodw(index) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield protractor_1.browser.driver.getAllWindowHandles().then((windowArray) => {
+                protractor_1.browser.driver.switchTo().window(windowArray[index]);
+            });
+        });
+	}
+	implicitWait(time) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if(time && /^[0-9]*$/mg.test(time.toString().trim())){
+                protractor_1.browser.sleep(time).then(() => { }).catch(err => {throw err;});
+            }else{
+                throw 'Invalid Input : '+time;
+            }
+        });
+    }
+	switchToDefaultWindow(str) {
+        return __awaiter(this, void 0, void 0, function* () {
+			yield protractor_1.browser.driver.getAllWindowHandles().then((windowArray) => {
+                protractor_1.browser.driver.switchTo().window(windowArray[0]);
+            });
+        });
+    }
 }
 exports.CommonSteps = CommonSteps;
