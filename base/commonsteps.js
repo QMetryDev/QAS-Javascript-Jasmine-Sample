@@ -469,5 +469,34 @@ class CommonSteps {
             });
         });
     }
+	maximizeWindow() {
+		return __awaiter(this, void 0, void 0, function* () {
+            yield protractor_1.browser.driver.manage().window().maximize();
+        });
+	}
+	dragAndDrop(locator,locator2) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield this.waitForPresence(locator);
+			yield protractor_1.browser.actions().dragAndDrop(yield protractor_1.element(locatorUtil.getLocator(locator).locator),yield protractor_1.element(locatorUtil.getLocator(locator2).locator)).mouseUp().perform()
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+		});
+	}
+	dragAndDropOffset(locator,locator2) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield this.waitForPresence(locator);
+			if(parseInt(locator2.split(',')[0])){
+				yield protractor_1.browser.actions().dragAndDrop(yield protractor_1.element(locatorUtil.getLocator(locator).locator),{x: parseInt(locator2.split(',')[0]), y: parseInt(locator2.split(',')[1])}).mouseUp().perform()
+				.then(() => { })
+				.catch(err => {
+					throw err;
+				});
+			}else{
+				throw 'invalid Offset input'
+			}
+		});
+	}
 }
 exports.CommonSteps = CommonSteps;
