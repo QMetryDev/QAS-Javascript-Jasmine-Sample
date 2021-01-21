@@ -6,18 +6,41 @@ let listener = new jasmine_1.Listener();
 const reporter_1 = require("../../support/reporter");
 const HtmlReporter = require("protractor-beautiful-reporter");
 const global_1 = require("../../support/global");
+const configurationManager_1 = require("../../base/configurationmanager");
+let isDIrectConnectSupported = true;
+let seleniumAddress = 'http://127.0.0.1:4444/wd/hub';
+let browserProperty = configurationManager_1.ConfigurationManager.getBundle().get("driver.name");
+let driverCaps = {};
+driverCaps["browserName"] = 'chrome';
+if (browserProperty && browserProperty.toLowerCase().indexOf("remote") >= 0) {
+    isDIrectConnectSupported = false;
+    seleniumAddress=configurationManager_1.ConfigurationManager.getBundle().get("remote.server");
+    let caps = configurationManager_1.ConfigurationManager.getBundle().get("remote.additional.capabilities");
+    try {
+        if (caps !== null && caps !== undefined) {
+            driverCaps = JSON.parse(caps);
+        }
+    }
+    catch (error) {
+        console.log(caps + " defined at .additional.capabilities" + " is not a valid json");
+    }
+}
+console.log("driver Capabilities : "+JSON.stringify(driverCaps));
 module.exports = {
-    seleniumAddress: 'http://localhost:4723/wd/hub',
-    specs: ['./spec/web/*.js','./spec/web/**/*.js'],
+    // seleniumAddress: 'http://localhost:4723/wd/hub',
+	// directConnect: true,
+	// capabilities: {
+	// 	browserName: 'chrome'
+	// },
+	directConnect: isDIrectConnectSupported,
+    seleniumAddress: seleniumAddress,
+    capabilities: driverCaps,
+    specs: ['./spec/<PLATFORM>/*.js','./spec/<PLATFORM>/**/*.js'],
     baseUrl: 'https://qas.qmetry.com/bank/',
     framework: 'jasmine',
     jasmineNodeOpts: {
         showColors: true,
         defaultTimeoutInterval: 5000000
-    },
-    directConnect: true,
-    capabilities: {
-        browserName: 'chrome'
     },
     onPrepare: function () {
         // set browser size...
