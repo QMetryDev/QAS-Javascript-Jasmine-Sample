@@ -35,7 +35,7 @@ module.exports = {
 	directConnect: isDIrectConnectSupported,
     seleniumAddress: seleniumAddress,
     capabilities: driverCaps,
-    specs: ['./spec/<PLATFORM>/*.js','./spec/<PLATFORM>/**/*.js'],
+    specs: ['./spec/web/*.js','./spec/web/**/*.js'],
     baseUrl: 'https://qas.qmetry.com/bank/',
     framework: 'jasmine',
     jasmineNodeOpts: {
