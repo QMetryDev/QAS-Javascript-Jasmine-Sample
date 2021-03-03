@@ -14,6 +14,49 @@ const ConfigurationManager_1 = require("./configurationmanager");
 let properties = ConfigurationManager_1.ConfigurationManager.getBundle();
 var EC = protractor_1.protractor.ExpectedConditions;
 let locatorUtil = new locators_1.LocatorUtils();
+let jsScript=`function simulateDragDrop(sourceNode, destinationNode) {
+	var EVENT_TYPES = {
+	DRAG_END: 'dragend',
+	DRAG_START: 'dragstart',
+	DROP: 'drop'
+	}
+
+	function createCustomEvent(type) {
+	var event = new CustomEvent("CustomEvent")
+	event.initCustomEvent(type, true, true, null)
+	event.dataTransfer = {
+	data: {
+	},
+	setData: function(type, val) {
+	this.data[type] = val
+	},
+	getData: function(type) {
+	return this.data[type]
+	}
+	}
+	return event
+	}
+
+	function dispatchEvent(node, type, event) {
+	if (node.dispatchEvent) {
+	return node.dispatchEvent(event)
+	}
+	if (node.fireEvent) {
+	return node.fireEvent("on" + type, event)
+	}
+	}
+
+	var event = createCustomEvent(EVENT_TYPES.DRAG_START)
+	dispatchEvent(sourceNode, EVENT_TYPES.DRAG_START, event)
+
+	var dropEvent = createCustomEvent(EVENT_TYPES.DROP)
+	dropEvent.dataTransfer = event.dataTransfer
+	dispatchEvent(destinationNode, EVENT_TYPES.DROP, dropEvent)
+
+	var dragEndEvent = createCustomEvent(EVENT_TYPES.DRAG_END)
+	dragEndEvent.dataTransfer = event.dataTransfer
+	dispatchEvent(sourceNode, EVENT_TYPES.DRAG_END, dragEndEvent)
+	}`;
 class CommonSteps {
 	addLocator(locatorName, functionOrScript) {
 		return __awaiter(this, void 0, void 0, function* () {
@@ -394,9 +437,7 @@ class CommonSteps {
 				if (locatorUtil.getLocator(nameOrIndex).actualLocatorString.includes("=")) {
 					yield protractor_1.protractor.browser
 						.switchTo()
-						.frame(locatorUtil
-							.getLocator(nameOrIndex)
-							.actualLocatorString.split("=", 2)[1]);
+						.frame(element(locatorUtil.getLocator(nameOrIndex).locator).getWebElement());
 				}
 				else {
 					yield protractor_1.protractor.browser.switchTo().frame(nameOrIndex);
@@ -469,5 +510,52 @@ class CommonSteps {
             });
         });
     }
+	maximizeWindow() {
+		return __awaiter(this, void 0, void 0, function* () {
+            yield protractor_1.browser.driver.manage().window().maximize();
+        });
+	}
+	dragAndDrop(locator,locator2) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield this.waitForPresence(locator);
+			yield protractor_1.browser.executeScript(jsScript + "simulateDragDrop(arguments[0], arguments[1])",yield protractor_1.element(locatorUtil.getLocator(locator).locator),yield protractor_1.element(locatorUtil.getLocator(locator2).locator))
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+			yield protractor_1.browser.actions().dragAndDrop(yield protractor_1.element(locatorUtil.getLocator(locator).locator),yield protractor_1.element(locatorUtil.getLocator(locator2).locator)).mouseUp().perform()
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+		});
+	}
+	dragAndDropValue(locator,JSvalue) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield this.waitForPresence(locator);
+			let executScriptValue ="arguments[0].setAttribute('value',"+JSvalue+");if(typeof(arguments[0].onchange) === 'function'){arguments[0].onchange('');}";
+			yield protractor_1.browser.executeScript(executScriptValue,yield protractor_1.element(locatorUtil.getLocator(locator).locator))
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+		});
+	}
+	dragAndDropOffset(locator,locator2) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield this.waitForPresence(locator);
+			if(parseInt(locator2.split(',')[0])){
+				yield protractor_1.browser.actions().dragAndDrop(yield protractor_1.element(locatorUtil.getLocator(locator).locator),{x: parseInt(locator2.split(',')[0]), y: parseInt(locator2.split(',')[1])}).mouseUp().perform()
+				.then(() => { })
+				.catch(err => {
+					throw err;
+				});
+			}else{
+				throw 'invalid Offset input'
+			}
+		});
+	}
+	// yield browser.actions().dragAndDrop(elem,{x: 200, y: 100}).mouseUp().perform();
+	// yield browser.actions().dragAndDrop(elem,target).mouseUp().perform();
 }
 exports.CommonSteps = CommonSteps;
