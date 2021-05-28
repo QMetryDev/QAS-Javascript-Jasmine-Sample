@@ -174,6 +174,9 @@ class CommonSteps {
 	}
 	verifyTitle(title) {
 		return __awaiter(this, void 0, void 0, function* () {
+			if (title.startsWith("${")) {
+				title = properties.get(title.substring(2, title.length - 1));
+			}
 			protractor_1.browser.getTitle().then(pageTitle => {
 				expect(title).toEqual(pageTitle, "Page Title should be " + title + ", actual is " + pageTitle);
 			});
@@ -205,6 +208,9 @@ class CommonSteps {
 	}
 	verifyText(locator, text) {
 		return __awaiter(this, void 0, void 0, function* () {
+			if (text.startsWith("${")) {
+				text = properties.get(text.substring(2, text.length - 1));
+			}
 			yield protractor_1.element(locatorUtil.getLocator(locator).locator)
 				.getText()
 				.then(textOfElement => {
@@ -557,5 +563,130 @@ class CommonSteps {
 	}
 	// yield browser.actions().dragAndDrop(elem,{x: 200, y: 100}).mouseUp().perform();
 	// yield browser.actions().dragAndDrop(elem,target).mouseUp().perform();
+	waitForAlert(time)  {
+			return __awaiter(this, void 0, void 0, function* () {
+			if(time && /^[0-9]*$/mg.test(time.trim())){
+				var timeout = +time.trim();
+				yield protractor_1.browser.driver.wait(protractor_1.until.alertIsPresent(), timeout).then(function() {
+				});
+			}else{
+				throw 'Invalid Input : '+time;
+			}
+		})
+	}
+	dismissAlert(time)  {
+			return __awaiter(this, void 0, void 0, function* () {
+				yield protractor_1.browser.driver.switchTo().alert().dismiss();
+		})
+	}
+	acceptAlert(time)  {
+		return __awaiter(this, void 0, void 0, function* () {
+				yield protractor_1.browser.driver.switchTo().alert().accept();
+		})
+	}
+	getAlertText(time)  {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield protractor_1.browser.driver.switchTo().alert().getText();
+		})
+	}
+	setAlertText(text)  {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield protractor_1.browser.driver.switchTo().alert().sendKeys(text);
+		})
+	}
+	verifyAlertNotPresent(time)  {
+		return __awaiter(this, void 0, void 0, function* () {
+		if(time && /^[0-9]*$/mg.test(time.trim())){
+			var timeout = +time.trim();
+			return new Promise((resolve, reject) => {
+				protractor_1.browser.driver.wait(protractor_1.until.alertIsPresent(), timeout)
+			   .then(isVisible => {
+				   if (isVisible) {
+					   reject(new Error("Alert is present"));
+				   }
+				   else {
+						resolve();
+				   }
+			   })
+			   .catch(err => {
+				   resolve();
+			   });
+
+		   });
+		}
+	})
+	}
+	verifyAlertPresent(time)  {
+		return __awaiter(this, void 0, void 0, function* () {
+		if(time && /^[0-9]*$/mg.test(time.trim())){
+			var timeout = +time.trim();
+			yield protractor_1.browser.driver.wait(protractor_1.until.alertIsPresent(), timeout).then(function() {
+			}).catch(err => {
+				throw 'Alert is not present. '+err;
+			});
+		}else{
+			throw 'Invalid Input : '+time;
+		}
+	})
+	}
+	executeJavaScript(jsScriptinput) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield protractor_1.browser.executeScript(jsScriptinput)
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+		});
+	}
+	executeAsyncJavaScript(jsScriptinput) {
+		return __awaiter(this, void 0, void 0, function* () {
+			yield protractor_1.browser.executeAsyncScript(jsScriptinput)
+			.then(() => { })
+			.catch(err => {
+				throw err;
+			});
+		});
+	}
+	storeValueIntoVariable(locator,varKey) {
+		return __awaiter(this, void 0, void 0, function* () {
+		properties.set(varKey , yield protractor_1.element(locatorUtil.getLocator(locator).locator).getAttribute("value"));
+		});
+	}
+	storeTextIntoVariable(locator,varKey) {
+		return __awaiter(this, void 0, void 0, function* () {
+		properties.set(varKey , yield protractor_1.element(locatorUtil.getLocator(locator).locator).getText());
+		});
+	}
+	storeTitleIntoVariable(varKey) {
+		return __awaiter(this, void 0, void 0, function* () {
+		properties.set(varKey, yield protractor_1.browser.driver.getTitle());
+		});
+	}
+	verifySelected(locator) {
+		return __awaiter(this, void 0, void 0, function* () {
+			let condition = EC.presenceOf(protractor_1.element(locatorUtil.getLocator(locator).locator));
+			yield protractor_1.browser.wait(condition, 5000).catch(reason => {
+				expect(reason).toBeUndefined("Element (" +
+					locatorUtil.getLocator(locator).description +
+					") was not present");
+			});
+			expect(yield protractor_1.element(locatorUtil.getLocator(locator).locator).isSelected()).toBe(true, "Element " +
+				locatorUtil.getLocator(locator).description +
+				" should be selected");
+		});
+	}
+	verifyNotSelected(locator) {
+		return __awaiter(this, void 0, void 0, function* () {
+			let condition = EC.presenceOf(protractor_1.element(locatorUtil.getLocator(locator).locator));
+			yield protractor_1.browser.wait(condition, 5000).catch(reason => {
+				expect(reason).toBeUndefined("Element (" +
+					locatorUtil.getLocator(locator).description +
+					") was not present");
+			});
+			expect(yield protractor_1.element(locatorUtil.getLocator(locator).locator).isSelected()).toBe(false, "Element " +
+				locatorUtil.getLocator(locator).description +
+				" should not be selected");
+		});
+	}
 }
 exports.CommonSteps = CommonSteps;
