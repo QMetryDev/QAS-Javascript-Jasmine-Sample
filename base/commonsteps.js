@@ -584,9 +584,9 @@ class CommonSteps {
 				yield protractor_1.browser.driver.switchTo().alert().accept();
 		})
 	}
-	getAlertText(time)  {
+	getAlertText(input)  {
 		return __awaiter(this, void 0, void 0, function* () {
-			yield protractor_1.browser.driver.switchTo().alert().getText();
+			properties.set(input , yield protractor_1.browser.driver.switchTo().alert().getText());
 		})
 	}
 	setAlertText(text)  {
@@ -688,5 +688,21 @@ class CommonSteps {
 				" should not be selected");
 		});
 	}
+	sendEncryptedKeys(val, locator) {
+		return __awaiter(this, void 0, void 0, function* () {
+		  this.waitForPresence(locator);
+		  val = Buffer.from(val, "base64").toString("ascii");
+		  if (val.startsWith("${")) {
+			val = properties.get(val.substring(2, val.length - 1));
+		  }
+		  yield protractor_1
+			.element(locatorUtil.getLocator(locator).locator)
+			.sendKeys(val)
+			.then(() => {})
+			.catch((err) => {
+			  throw err;
+			});
+		});
+  }
 }
 exports.CommonSteps = CommonSteps;
